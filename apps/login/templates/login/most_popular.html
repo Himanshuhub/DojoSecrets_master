@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Most Popular Secrets</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Barrio|Roboto+Condensed" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'login/css/style.css' %}" />
+  </head>
+  <body>
+    <div class="main_container">
+      <div class="container">
+        <h2>Most Popular Secrets...</h2>
+        <hr>
+        <div id="secrets">
+          {% for secret in secrets %}
+          <br>
+            <div class="entry">
+                <h5 class="secret">{{secret.post}}</h5>
+                <br>
+                <label class='secret_info'><p><i>({{secret.created_at|timesince}} ago)</i>  -- {{secret.num_likes}} likes<p>
+
+
+
+            {% if current_user not in secret.like.all %}
+              <form action="{% url 'add_like2' %}" method="POST">
+                <input type='hidden' name="user_id" value="{{request.session.user_id}}">
+                <input type='hidden' name="secret_id" value="{{secret.id}}">
+                {% csrf_token %}
+                <input type="submit" value="Like" class="btn btn-primary btn-xs">
+              </form>
+            {% else %}
+              <i class="liked">-- Liked!</i>
+            {% endif %}
+
+
+            </div><br>
+          {% endfor %}
+        </div>
+        <a href="{% url 'indexWall' %}" class="btn btn-default btn-block">Back</a><br>
+      </div>
+    </div>
+  </body>
+</html>

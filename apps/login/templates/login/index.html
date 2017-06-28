@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css?family=Barrio|Roboto+Condensed" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'login/css/style.css' %}" />
+
+
+  </head>
+  <body>
+    <div class="main_container">
+      <div class="container">
+
+        <div class="title">
+          <h1>Dojo Secrets</h1>
+          <h3 class="subtitle">Share your deepest secrets, anonymously!</h3>
+        </div>
+        <hr>
+
+        <div class="login">
+          <h2 class="form_title">Login</h2>
+          <form action="/login" method="POST">
+            <div id="login" class="form-group">
+              {% csrf_token %}
+              <p class="titles">Email:</p><input type="text" name="email" class="form-control">
+              <p class="titles">Password:</p><input type="password" name="password" class="form-control"><br>
+              <input type="submit" value="Login" class="btn btn-default btn-block">
+            </div>
+          </form>
+        </div>
+
+
+        <div class="register">
+          <h2 class="form_title">Register</h2>
+          <form action="/register" method="POST">
+            <div class="form-group">
+              {% csrf_token %}
+              <p class="titles">First Name:</p><input type="text" name="first_name" class="form-control">
+              <p class="titles">Last Name:</p><input type="text" name="last_name" class="form-control">
+              <p class="titles">Email:</p><input type="text" name="email" class="form-control">
+              <p class="titles">Password:</p><input type="password" name="password" class="form-control">
+              <p class="titles">Password Confirm:</p><input type="password" name="password_cf" class="form-control"><br>
+              <input type="submit" value="Create Account" class="btn btn-success btn-block">
+            </div>
+          </form>
+        </div>
+        {% for message in messages %}
+          <ul>
+            <li>{{ message }}</li>
+          </ul>
+        {% endfor %}
+      </div>
+  </body>
+</html>

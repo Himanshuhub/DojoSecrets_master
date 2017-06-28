@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dojo Secrets</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Barrio|Roboto+Condensed" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'login/css/style.css' %}" />
+  </head>
+
+  <body>
+    <div class="main_container">
+      <div class="container">
+        <div class="top_container">
+          <h4>Welcome, {{request.session.current_user}}!</h4>
+          <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Logout" class="btn btn-default btn-xs logout">
+          </form>
+        </div>
+
+
+        <div id="post_secret">
+          <form action="{% url 'add_secret' %}" method="POST">
+            {% csrf_token %}
+            <textarea rows="5" cols="75" name="secret" class="form-control" placeholder="Your secret here..."></textarea><br>
+            <input type="submit" value="Post" class="btn btn-default btn-block post_btn">
+            <a href="{% url 'most_popular' %}" class="btn btn-block">Most Popular Secrets</a>
+          </form>
+        </div>
+
+        <hr>
+
+        <h2>Recent Secrets...</h2>
+        <div id="secrets">
+          {% for secret in secrets %}
+            <div class="entry"><br>
+            <h5 class="secret">{{secret.post}}</h5>
+            <br>
+            <label class='secret_info'><p><i>({{secret.created_at|timesince}} ago)</i>  -- {{secret.num_likes}} likes<p>
+
+            {% if secret.creator == current_user %}
+              <form action="{% url 'delete_secret' %}" method="POST">
+                <input type='hidden' name="secret_id" value="{{secret.id}}">
+                {% csrf_token %}
+                <input type="submit" value="Delete" class="btn btn-danger btn-xs">
+              </form>
+            {% endif %}
+
+
+            {% if current_user not in secret.like.all %}
+              <form action="{% url 'add_like' %}" method="POST">
+                <input type='hidden' name="user_id" value="{{request.session.user_id}}">
+                <input type='hidden' name="secret_id" value="{{secret.id}}">
+                <input type="hidden" name="page" value=1>
+                {% csrf_token %}
+                <input type="submit" value="Like" class="btn btn-primary btn-xs">
+              </form>
+            {% else %}
+              <i class="liked">-- Liked!</i>
+            {% endif %}
+            </label>
+              <hr>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
