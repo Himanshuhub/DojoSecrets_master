@@ -7,7 +7,14 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css?family=Barrio|Roboto+Condensed" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'login/css/style.css' %}" />
-
+    <!-- <script type="text/javascript">
+      $(document).ready(function () {
+          $("#textbox1").wijinputdate(
+              {
+                  showTrigger: true
+          });
+      });
+    </script> -->
 
   </head>
   <body>
@@ -38,12 +45,14 @@
           <form action="/register" method="POST">
             <div class="form-group">
               {% csrf_token %}
-              <p class="titles">First Name:</p><input type="text" name="first_name" class="form-control">
-              <p class="titles">Last Name:</p><input type="text" name="last_name" class="form-control">
+              <p class="titles">Name:</p><input type="text" name="first_name" class="form-control">
+              <p class="titles">Alias:</p><input type="text" name="last_name" class="form-control">
               <p class="titles">Email:</p><input type="text" name="email" class="form-control">
               <p class="titles">Password:</p><input type="password" name="password" class="form-control">
-              <p class="titles">Password Confirm:</p><input type="password" name="password_cf" class="form-control"><br>
-              <input type="submit" value="Create Account" class="btn btn-success btn-block">
+              <p class="titles">Password Confirm:</p><input type="password" name="password_cf" class="form-control">
+              <p class="titles">Date of Birth:</p><input type="Date" name="dob" class="form-control"><br>
+
+              <input type="submit" value="Register" class="btn btn-success btn-block">
             </div>
           </form>
         </div>
@@ -53,5 +62,6 @@
           </ul>
         {% endfor %}
       </div>
+    </div>
   </body>
 </html>

@@ -11,29 +11,36 @@
   <body>
     <div class="main_container">
       <div class="container">
-        <h2>Most Popular Secrets...</h2>
+        <h2>People you may want to Poke:</h2>
         <hr>
         <div id="secrets">
-          {% for secret in secrets %}
+          {% for secret in users %}
           <br>
             <div class="entry">
-                <h5 class="secret">{{secret.post}}</h5>
-                <br>
-                <label class='secret_info'><p><i>({{secret.created_at|timesince}} ago)</i>  -- {{secret.num_likes}} likes<p>
+                <h5 class="secret">Name {{secret.first_name}} {{secret.last_name}}</h5>
+                <h5 class="secret">Alias {{secret.last_name}}</h5>
+                <h5 class="secret">Email {{secret.email}}</h5>
+                <h5 class="secret">Email {{secrets.email}}</h5>
 
+                <label class='secret_info'>
+                  <p>
+                    <!-- <i>({{secret.created_at|timesince}} ago)</i>  -- -->
+                    {% for secret in secrets %}
 
+                     {{secret.num_likes}} likes<p>
 
-            {% if current_user not in secret.like.all %}
+            <!-- {% if current_user not in secret.like.all %} -->
               <form action="{% url 'add_like2' %}" method="POST">
                 <input type='hidden' name="user_id" value="{{request.session.user_id}}">
                 <input type='hidden' name="secret_id" value="{{secret.id}}">
                 {% csrf_token %}
                 <input type="submit" value="Like" class="btn btn-primary btn-xs">
               </form>
-            {% else %}
+            <!-- {% else %} -->
               <i class="liked">-- Liked!</i>
             {% endif %}
 
+            {% endfor %}
 
             </div><br>
           {% endfor %}

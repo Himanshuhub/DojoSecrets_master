@@ -6,6 +6,9 @@ import re
 # bcrypt
 import bcrypt
 from django.db.models import Count
+import datetime
+from django.utils import timezone
+
 # checking valid email
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
@@ -40,7 +43,7 @@ class UserManager(models.Manager):
         else:
             print "You have 0 errors. Hooray!"
             pw_hash = bcrypt.hashpw(postData['password'].encode(), bcrypt.gensalt())
-            user = User.objects.create(first_name=postData['first_name'], last_name=postData['last_name'], email=postData['email'], password=pw_hash)
+            user = User.objects.create(first_name=postData['first_name'], last_name=postData['last_name'], email=postData['email'], password=pw_hash, dob=postData['dob'])
             return (True, user)
 
     def logVal(self, postData):
@@ -66,30 +69,31 @@ class UserManager(models.Manager):
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    dob = models.DateTimeField(auto_now = True, null = True)
     email = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-
     objects = UserManager()
 
-class SecretManager(models.Manager):
-    def process_secret(self, postData, user_id):
-        secret = Secret.objects.create(post = postData['secret'], creator = User.objects.get(id=user_id))
-        return secret
 
-    def process_like(self, postData):
+class PokeManager(models.Manager):
+    # def process_poke(self, postData, user_id):
+    #     poke = Poke.objects.create(post = '1', creator = User.objects.get(id=user_id))
+    #     return poke
+
+    def process_poke(self, postData, user_id):
         selected_user = User.objects.get(id = postData['user_id'])
-        selected_secret = Secret.objects.get(id = postData['secret_id'])
-        selected_secret.like.add(selected_user)
-        user_likes = Secret.objects.annotate(num_likes=Count('like'))
-        return user_likes
+        # selected_poke = Poke.objects.get(id = postData['poke_id'])
+        # selected_poke.poke.add(selected_user)
+        poke = Poke.objects.create(poke = User.objects.get(id='user_id'), poker = User.objects.get(id='user_id'))
+        user_pokes = Poke.objects.annotate(num_pokes=Count('poke'))
+        return user_pokes
 
-class Secret(models.Model):
-    post = models.CharField(max_length=255)
+class Poke(models.Model):
+    send_user = models.ForeignKey(User, related_name="poker")
+    receive_user = models.ForeignKey(User, related_name="pokee")
+    poke_date = models.DateTimeField('date poked')
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-    creator = models.ForeignKey(User, related_name="creator", null=True)
-    like = models.ManyToManyField(User, related_name="liked")
-
-    objects = SecretManager()
+    objects = PokeManager()
